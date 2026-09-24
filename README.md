@@ -69,3 +69,11 @@ An ambiguous ticket:
 ## License
 
 MIT
+
+# Jev Ticket Router
+
+[![CI](https://github.com/kallurayaankit/jev-ticket-router/actions/workflows/ci.yml/badge.svg)](https://github.com/kallurayaankit/jev-ticket-router/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/release/python-3120/)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/kallurayaankit/jev-ticket-router)
