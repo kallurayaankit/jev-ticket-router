@@ -1,8 +1,9 @@
 # main.py
 from dotenv import load_dotenv
+
 load_dotenv()
 
-import jevlang
+import jevlang  # noqa: F401  (installs the .jev import hook)
 import triage
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,8 +19,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class TicketRequest(BaseModel):
     text: str
+
 
 class RouteResponse(BaseModel):
     team: str
@@ -29,7 +32,18 @@ class RouteResponse(BaseModel):
     auto_routed: bool
     reason: str | None = None
 
+
 AUTO_ROUTE_THRESHOLD = 0.6
+
+
+@app.get("/")
+async def root():
+    return {
+        "service": "Jev Ticket Router",
+        "docs": "/docs",
+        "route_endpoint": "POST /route",
+    }
+
 
 @app.post("/route", response_model=RouteResponse)
 async def route_ticket(request: TicketRequest):
@@ -46,7 +60,7 @@ async def route_ticket(request: TicketRequest):
         # Score → float subclass
         urgency = float(analysis.urgency)
 
-        # Noul → float subclass, truthy at >= 0.5
+        # Noul → float subclass
         is_angry = float(analysis.is_angry) >= 0.5
 
         if confidence >= AUTO_ROUTE_THRESHOLD:
@@ -56,7 +70,10 @@ async def route_ticket(request: TicketRequest):
         else:
             team = "human"
             auto_routed = False
-            reason = f"Low confidence ({confidence:.2f}) on department classification. Sent to human review."
+            reason = (
+                f"Low confidence ({confidence:.2f}) on department "
+                "classification. Sent to human review."
+            )
 
         return RouteResponse(
             team=team,
@@ -64,11 +81,14 @@ async def route_ticket(request: TicketRequest):
             urgency=urgency,
             is_angry=is_angry,
             auto_routed=auto_routed,
-            reason=reason
+            reason=reason,
         )
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Decision engine error: {str(e)}")
+    except (ValueError, RuntimeError, KeyError) as e:
+        raise HTTPException(
+            status_code=500, detail=f"Decision engine error: {e!s}"
+        ) from e
+
 
 @app.get("/health")
 async def health_check():

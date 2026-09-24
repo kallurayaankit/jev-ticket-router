@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-import jevlang  # noqa: F401
+import jevlang  # noqa: F401  (installs the .jev import hook)
 import triage
 
 test_tickets = [
