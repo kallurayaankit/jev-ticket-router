@@ -1,0 +1,33 @@
+# triage.jev
+from jevlang import ask_all
+
+def wants_refund(ticket_text):
+    return ticket_text ~ "the customer wants a refund"
+
+def route_to_team(ticket_text):
+    jev ticket_text "Which team should handle this ticket?":
+        case "billing" ("invoices, refunds, charges, payment issues"):
+            return "billing"
+        case "technical" ("bugs, outages, errors, login problems"):
+            return "technical"
+        case "account" ("account access, password resets, profile changes"):
+            return "account"
+        else:
+            return "human"
+
+def analyze_ticket(ticket_text):
+    answers = ask_all(
+        ticket_text,
+        # dict → Choice (str subclass)
+        department={
+            "billing":   "invoices, refunds, charges, payment issues",
+            "technical": "bugs, outages, errors, login problems",
+            "account":   "account access, password resets, profile changes",
+            "human":     "unclear, ambiguous, or none of the above",
+        },
+        # list → Score (float subclass)
+        urgency=["low", "medium", "high", "critical"],
+        # str → Noul (float subclass)
+        is_angry="Is the customer upset or frustrated?"
+    )
+    return answers
